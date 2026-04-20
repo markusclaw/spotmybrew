@@ -1,17 +1,23 @@
 name = "spotmybrew"
-type = "javascript"
 compatibility_date = "2026-04-20"
-
-[build]
-command = "npm run build"
-cwd = "."
-watch_paths = ["**/*.{ts,tsx,js,jsx}"]
+main = "api/src/index.ts"
 
 [env.production]
-vars = { ENVIRONMENT = "production" }
-routes = [
-  { pattern = "spotmybrew.pages.dev/*", zone_name = "pages.dev" }
-]
+vars = { ENVIRONMENT = "production", CORS_ORIGIN = "https://spotmybrew.pages.dev" }
+
+# Add your D1 database ID here after running: wrangler d1 create spotmybrew-db
+# [[env.production.d1_databases]]
+# binding = "DB"
+# database_name = "spotmybrew-db"
+# database_id = "YOUR_DATABASE_ID_HERE"
+
+# JWT_SECRET should be set as a secret, not a plain var:
+# wrangler secret put JWT_SECRET --env production
 
 [env.development]
-vars = { ENVIRONMENT = "development" }
+vars = { ENVIRONMENT = "development", CORS_ORIGIN = "*" }
+
+# [[env.development.d1_databases]]
+# binding = "DB"
+# database_name = "spotmybrew-db"
+# database_id = "YOUR_DATABASE_ID_HERE"
