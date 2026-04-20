@@ -17,10 +17,10 @@ interface FilterSidebarProps {
   setSelectedStyles: (value: string[]) => void;
   selectedOrigins: string[];
   setSelectedOrigins: (value: string[]) => void;
-  abvRange: [number, number];
-  setAbvRange: (value: [number, number]) => void;
-  ibuRange: [number, number];
-  setIbuRange: (value: [number, number]) => void;
+  abvRange: number[];
+  setAbvRange: (value: number[]) => void;
+  ibuRange: number[];
+  setIbuRange: (value: number[]) => void;
   selectedColors: string[];
   setSelectedColors: (value: string[]) => void;
   onClearFilters: () => void;
