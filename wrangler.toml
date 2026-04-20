@@ -1,0 +1,17 @@
+name = "spotmybrew"
+type = "javascript"
+compatibility_date = "2026-04-20"
+
+[build]
+command = "npm run build"
+cwd = "."
+watch_paths = ["**/*.{ts,tsx,js,jsx}"]
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+routes = [
+  { pattern = "spotmybrew.pages.dev/*", zone_name = "pages.dev" }
+]
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
