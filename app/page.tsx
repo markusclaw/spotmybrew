@@ -18,8 +18,8 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedOrigins, setSelectedOrigins] = useState<string[]>([]);
-  const [abvRange, setAbvRange] = useState([0, 15]);
-  const [ibuRange, setIbuRange] = useState([0, 100]);
+  const [abvRange, setAbvRange] = useState<[number, number]>([0, 15]);
+  const [ibuRange, setIbuRange] = useState<[number, number]>([0, 100]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
   // Fetch beers from API
