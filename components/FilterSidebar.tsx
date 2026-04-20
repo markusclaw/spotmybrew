@@ -13,8 +13,6 @@ const styleOptions = ['IPA', 'Lager', 'Stout', 'Pilsner', 'Porter', 'Red Ale', '
 const originOptions = ['Mexico', 'USA', 'Europe', 'Other'];
 
 interface FilterSidebarProps {
-  search: string;
-  setSearch: (value: string) => void;
   selectedStyles: string[];
   setSelectedStyles: (value: string[]) => void;
   selectedOrigins: string[];
@@ -29,8 +27,6 @@ interface FilterSidebarProps {
 }
 
 export default function FilterSidebar({
-  search,
-  setSearch,
   selectedStyles,
   setSelectedStyles,
   selectedOrigins,
@@ -67,18 +63,6 @@ export default function FilterSidebar({
     <aside className="w-64 flex-shrink-0">
       <div className="bg-white rounded-lg shadow p-6 sticky top-24">
         <h2 className="text-lg font-bold text-gray-900 mb-6">Filters</h2>
-
-        {/* Search */}
-        <div className="mb-8">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Search</label>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Beer name, brewery..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-          />
-        </div>
 
         {/* Beer Style */}
         <div className="mb-8">

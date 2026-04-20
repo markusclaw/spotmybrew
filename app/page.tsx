@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import BeerCard from '@/components/BeerCard';
 import FilterSidebar from '@/components/FilterSidebar';
+import SearchBar from '@/components/SearchBar';
 import { Beer } from '@/types/beer';
 
 export default function Home() {
@@ -113,7 +114,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h1 className="text-3xl font-bold text-amber-900">🍺 Spot My Brew</h1>
               <span className="text-sm text-gray-600">Craft Beer Discovery</span>
@@ -122,6 +123,8 @@ export default function Home() {
               + Add Beer
             </button>
           </div>
+          {/* Search Bar */}
+          <SearchBar value={search} onChange={setSearch} />
         </div>
       </header>
 
@@ -129,8 +132,6 @@ export default function Home() {
         <div className="flex gap-8">
           {/* Sidebar */}
           <FilterSidebar
-            search={search}
-            setSearch={setSearch}
             selectedStyles={selectedStyles}
             setSelectedStyles={setSelectedStyles}
             selectedOrigins={selectedOrigins}
@@ -149,8 +150,12 @@ export default function Home() {
             {/* Results Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Beers in Repository</h2>
-                <p className="text-gray-600">{filteredBeers.length} beers found</p>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {search ? `Search Results for "${search}"` : 'Beers in Repository'}
+                </h2>
+                <p className="text-gray-600">
+                  {filteredBeers.length} beer{filteredBeers.length !== 1 ? 's' : ''} found
+                </p>
               </div>
               <select
                 value={sortBy}
