@@ -60,7 +60,8 @@ export default function BeerDetail() {
   useEffect(() => {
     const fetchBeer = async () => {
       try {
-        const res = await fetch(`/api/beers/${beerId}`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/beers/${beerId}`);
 
         if (!res.ok) {
           setError('Beer not found');
@@ -85,7 +86,7 @@ export default function BeerDetail() {
   }, [beerId]);
 
   const handleLike = async () => {
-    const res = await fetch(`/api/beers/${beerId}/like`, { method: 'POST' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/beers/${beerId}/like`, { method: 'POST' });
     if (res.ok) {
       const data = await res.json();
       setIsLiked(!data.unliked);
@@ -93,7 +94,7 @@ export default function BeerDetail() {
   };
 
   const handleSave = async () => {
-    const res = await fetch(`/api/beers/${beerId}/save`, { method: 'POST' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/beers/${beerId}/save`, { method: 'POST' });
     if (res.ok) {
       const data = await res.json();
       setIsSaved(!data.unsaved);

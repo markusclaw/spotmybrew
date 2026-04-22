@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Providers from '@/components/Providers';
 import './globals.css';
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {

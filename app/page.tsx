@@ -30,7 +30,8 @@ export default function Home() {
   useEffect(() => {
     const fetchBeers = async () => {
       try {
-        const res = await fetch('/api/beers');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/beers`);
         const data = await res.json();
         setBeers(data);
         setFilteredBeers(data);

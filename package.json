@@ -9,7 +9,9 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx db/seed.ts"
+    "db:seed": "tsx db/seed.ts",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:deploy": "npm run build && wrangler pages deploy out --project-name spotmybrew"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
