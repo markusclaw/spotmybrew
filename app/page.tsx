@@ -1,12 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useUser, useStackApp } from '@stackframe/stack';
+
 import BeerCard from '@/components/BeerCard';
 import FilterSidebar from '@/components/FilterSidebar';
 import SearchBar from '@/components/SearchBar';
 import { Beer } from '@/types/beer';
 
 export default function Home() {
+  const user = useUser();
+  const app = useStackApp();
   const [beers, setBeers] = useState<Beer[]>([]);
   const [filteredBeers, setFilteredBeers] = useState<Beer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -116,12 +120,29 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold text-amber-900">🍺 Spot My Brew</h1>
+              <h1 className="text-3xl font-bold text-amber-900">Spot My Brew</h1>
               <span className="text-sm text-gray-600">Craft Beer Discovery</span>
             </div>
-            <button className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition font-semibold">
-              + Add Beer
-            </button>
+            <div className="flex items-center gap-3">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-700">{user.displayName || user.primaryEmail}</span>
+                  <button
+                    onClick={() => app.signOut()}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition font-semibold text-sm"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => app.redirectToSignIn()}
+                  className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition font-semibold"
+                >
+                  Sign In
+                </button>
+              )}
+            </div>
           </div>
           {/* Search Bar */}
           <SearchBar value={search} onChange={setSearch} />
@@ -206,7 +227,7 @@ export default function Home() {
                   disabled={currentPage === 1}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
                 >
-                  ← Prev
+                  Prev
                 </button>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
@@ -226,7 +247,7 @@ export default function Home() {
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
                 >
-                  Next →
+                  Next
                 </button>
               </div>
             )}

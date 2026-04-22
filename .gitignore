@@ -27,5 +27,5 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-# Wrangler
-.wrangler
+# Drizzle
+drizzle/meta

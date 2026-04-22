@@ -18,7 +18,7 @@ export default function RatingForm({ beerId, userRating, onRatingSubmitted }: Ra
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api'}/beers/${beerId}/rate`, {
+      const response = await fetch(`/api/beers/${beerId}/rate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ score, review_text: review }),

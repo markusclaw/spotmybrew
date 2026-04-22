@@ -2,14 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-
-export async function generateStaticParams() {
-  return Array.from({ length: 20 }, (_, i) => ({ id: String(i + 1) }));
-}
-import Image from 'next/image';
 import Link from 'next/link';
+import { useUser, useStackApp } from '@stackframe/stack';
 import RatingForm from '@/components/RatingForm';
-import { authService } from '@/lib/auth';
 
 interface Beer {
   id: string;
@@ -40,6 +35,8 @@ interface Rating {
 export default function BeerDetail() {
   const params = useParams();
   const beerId = params.id as string;
+  const user = useUser();
+  const app = useStackApp();
 
   const [beer, setBeer] = useState<Beer | null>(null);
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -48,7 +45,6 @@ export default function BeerDetail() {
   const [error, setError] = useState('');
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [user, setUser] = useState<any>(null);
 
   const colorMap: Record<string, string> = {
     'Pale': '#FFF44F',
@@ -64,14 +60,7 @@ export default function BeerDetail() {
   useEffect(() => {
     const fetchBeer = async () => {
       try {
-        const authUser = authService.getUser();
-        setUser(authUser);
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/beers/${beerId}`, {
-          headers: authUser
-            ? { 'Authorization': `Bearer ${authService.getToken()}` }
-            : {},
-        });
+        const res = await fetch(`/api/beers/${beerId}`);
 
         if (!res.ok) {
           setError('Beer not found');
@@ -83,6 +72,8 @@ export default function BeerDetail() {
         setBeer(data.beer);
         setRatings(data.ratings || []);
         setUserRating(data.userRating);
+        setIsLiked(data.isLiked || false);
+        setIsSaved(data.isSaved || false);
       } catch (e) {
         setError('Failed to load beer');
       } finally {
@@ -92,6 +83,22 @@ export default function BeerDetail() {
 
     fetchBeer();
   }, [beerId]);
+
+  const handleLike = async () => {
+    const res = await fetch(`/api/beers/${beerId}/like`, { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      setIsLiked(!data.unliked);
+    }
+  };
+
+  const handleSave = async () => {
+    const res = await fetch(`/api/beers/${beerId}/save`, { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      setIsSaved(!data.unsaved);
+    }
+  };
 
   if (loading) {
     return (
@@ -107,8 +114,8 @@ export default function BeerDetail() {
         <div className="max-w-2xl mx-auto text-center py-12">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">404</h1>
           <p className="text-gray-600 mb-6">{error || 'Beer not found'}</p>
-          <Link href="/browse" className="text-amber-600 hover:text-amber-700 font-semibold">
-            ← Back to Browse
+          <Link href="/" className="text-amber-600 hover:text-amber-700 font-semibold">
+            Back to Browse
           </Link>
         </div>
       </div>
@@ -121,13 +128,13 @@ export default function BeerDetail() {
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Back Button */}
-        <Link href="/browse" className="text-amber-600 hover:text-amber-700 font-semibold mb-6 inline-block">
-          ← Back to Browse
+        <Link href="/" className="text-amber-600 hover:text-amber-700 font-semibold mb-6 inline-block">
+          Back to Browse
         </Link>
 
         {/* Beer Header */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Image */}
+          {/* Color badge */}
           <div className="md:col-span-1 flex items-start justify-center">
             <div
               className="h-64 w-40 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -135,12 +142,9 @@ export default function BeerDetail() {
                 background: `linear-gradient(135deg, ${bgColor}, ${bgColor}cc)`,
               }}
             >
-              <Image
-                src="/beer-bottle.png"
-                alt={beer.name}
-                width={80}
-                height={160}
-                className="object-contain drop-shadow-lg"
+              <div
+                className="rounded-full border-4 border-white/50"
+                style={{ backgroundColor: bgColor, width: '80px', height: '80px' }}
               />
             </div>
           </div>
@@ -166,7 +170,7 @@ export default function BeerDetail() {
                     {beer.reviews || 0} ratings
                   </p>
                 </div>
-                <div className="text-yellow-400 text-4xl">★</div>
+                <div className="text-yellow-400 text-4xl">*</div>
               </div>
             </div>
 
@@ -189,11 +193,21 @@ export default function BeerDetail() {
             {/* Actions */}
             {user && (
               <div className="flex gap-3">
-                <button className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg font-semibold hover:bg-red-200 transition">
-                  ♥ Like
+                <button
+                  onClick={handleLike}
+                  className={`flex-1 py-2 rounded-lg font-semibold transition ${
+                    isLiked ? 'bg-red-500 text-white' : 'bg-red-100 text-red-600 hover:bg-red-200'
+                  }`}
+                >
+                  {isLiked ? 'Liked' : 'Like'}
                 </button>
-                <button className="flex-1 bg-amber-100 text-amber-600 py-2 rounded-lg font-semibold hover:bg-amber-200 transition">
-                  ✓ Save
+                <button
+                  onClick={handleSave}
+                  className={`flex-1 py-2 rounded-lg font-semibold transition ${
+                    isSaved ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-600 hover:bg-amber-200'
+                  }`}
+                >
+                  {isSaved ? 'Saved' : 'Save'}
                 </button>
               </div>
             )}
@@ -218,9 +232,12 @@ export default function BeerDetail() {
         ) : (
           <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-blue-800">
-              <Link href="/login" className="font-semibold underline">
+              <button
+                onClick={() => app.redirectToSignIn()}
+                className="font-semibold underline"
+              >
                 Sign in
-              </Link>
+              </button>
               {' '}to rate and review this beer.
             </p>
           </div>
@@ -249,7 +266,7 @@ export default function BeerDetail() {
                       {Array(rating.score)
                         .fill(0)
                         .map((_, i) => (
-                          <span key={i}>★</span>
+                          <span key={i}>*</span>
                         ))}
                     </div>
                   </div>
